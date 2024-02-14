@@ -1,13 +1,37 @@
 import { useNavigation } from "@react-navigation/native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, FlatList} from "react-native";
 import MyButton from "../components/Button";
+import { storageService } from "../service/storage/storegeService";
 
 export default function HomeScreen () {
 
     const navigate = useNavigation()
+
+    const [tasks, setTasks] = useState([])
+
+  useEffect( () => {
+    getItens()
+    
+  }, [])
+
+    const getItens = async () => {
+        const myTasks = await storageService.getItem("tasks")
+        setTasks(myTasks)
+    }   
+  
     return (
         <View>
+
+            {
+                tasks.map((task, index) => {
+                    return (
+                        <View key={index}>
+                    <Text>{task.description}</Text>
+                    </View>
+                    )
+                })
+            }
 
        
             <MyButton 
@@ -24,7 +48,7 @@ export default function HomeScreen () {
             padding={5}
             borderRadius={10}
             />
-            <Text>{}</Text>
+           
         </View>
 
             

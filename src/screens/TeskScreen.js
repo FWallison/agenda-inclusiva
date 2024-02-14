@@ -1,11 +1,11 @@
 // import { useNavigation } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
-import { View, Text, TextInput, StyleSheet, Alert } from "react-native";
+import React, { useState } from "react";
+import { View,  TextInput, StyleSheet, Alert } from "react-native";
 import MyButton from "../components/Button";
+import Agenda from "../components/Agenda";
 
 import { Select } from "../components/form/Select";
-import { storageService } from "../service/storage/assyncStorage";
-
+import { storageService } from "../service/storage/storegeService";
 export default function HomeScreen() {
 //   const navigate = useNavigation();
   const [tesk, setTask] = useState({
@@ -14,26 +14,25 @@ export default function HomeScreen() {
     description:"",
  
   })
-  
-  
-
-  
 
 
   const salveTesk = async () => {
     if (!tesk.type) {
-        Alert.alert("Escolha um titulo")
+        Alert.alert("selecione um tipo de atividade")
     }
-    let tesks = await storageService.getItem("tesks")
-    
-    if (!tesks.length || tesks.length < 0 ) {
-        tesks = []
+    if (!tesk.subject) {
+      Alert.alert("selecione uma materia")
+  }
+    let tasks = await storageService.getItem("tasks")
+    console.log(tasks)
+    if (!tasks || !tasks.length || tasks.length < 0 ) {
+        tasks = []
     }
 
-    const newTesks = [
-        ...tesks, tesk
+    const newtasks = [
+        ...tasks, tesk
     ]
-    storageService.setItem("tesks",newTesks)
+    storageService.setItem("tasks",newtasks)
    Alert.alert("Tarefa salva")
    console.log("foi registrado")
   }
@@ -41,7 +40,9 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.continer}>
-        <View style={styles.list}>
+       <View style={styles.list}>
+      <Agenda
+      />
       <Select 
             label={"Atividade"}  
             options={[
@@ -70,7 +71,7 @@ export default function HomeScreen() {
             }}
             selected={tesk.type || ""}
             />
-
+   
       <Select 
             label={"Materia"}  
             options={[
@@ -135,8 +136,9 @@ export default function HomeScreen() {
               marginLeft={"15%"}
               borderRadius={10}
               padding={10}
-            />
-           
+            /> 
+       
+         
     </View>
    
   );

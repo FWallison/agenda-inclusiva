@@ -10,7 +10,7 @@ export const assyncStorageService = {
   },
   setItem: async (key, value) => {
     try {
-      storage.setItem(key, JSON.stringify(value));
+      await storage.setItem(key, JSON.stringify(value));
     } catch (error) {
       console.log(error);
     }
