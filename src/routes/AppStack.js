@@ -2,13 +2,14 @@ import React from "react";
 import HomeScreen from "../screens/HomeScreen";
 import ConfigScreen from "../screens/ConfigScreen";
 import TeskScreen from "../screens/TeskScreen";
+import ListScreen from "../screens/ListScreen";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 const Stack = createNativeStackNavigator();
 
 export default function AppStack () {
   return (
-    <Stack.Navigator initialRouteName="home">
+    <Stack.Navigator initialRouteName="inicio">
       <Stack.Screen
         name="Inicio"
         component={HomeScreen}
@@ -36,6 +37,22 @@ export default function AppStack () {
             backgroundColor: "#5D3FD3", 
           },
         }}
+
+        
+        
+      />
+      <Stack.Screen
+        name="lista"
+        component={ListScreen}
+        options={{
+          headerTitleAlign: "left",
+          headerShown: true,
+          headerStyle: {
+            backgroundColor: "#5D3FD3", 
+          },
+        }}
+
+        
         
       />
     </Stack.Navigator>

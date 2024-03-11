@@ -18,4 +18,13 @@ export const assyncStorageService = {
   removeItem: async (key) => {
     storage.removeItem(key);
   },
+
+  
+  removeTaskById: async (key, taskId) => {
+    let tasks = await storageService.getItem(key);
+    if (tasks) {
+      tasks = tasks.filter((task) => task.id !== taskId);
+      await storageService.setItem(key, tasks);
+    }
+  },
 };

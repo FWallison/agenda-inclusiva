@@ -1,20 +1,38 @@
 // import { useNavigation } from "@react-navigation/native";
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { View,  TextInput, StyleSheet, Alert } from "react-native";
 import MyButton from "../components/Button";
-import Agenda from "../components/Agenda";
-
 import { Select } from "../components/form/Select";
 import { storageService } from "../service/storage/storegeService";
+import 'react-native-get-random-values';
+import { v4 as uuidv4 } from 'uuid';
+import { useFocusEffect } from "@react-navigation/native";
+import { assyncStorageService } from "../service/storage/assyncStorage";
+import {useNavigation} from "@react-navigation/native";
+import Calender from "../components/Calender";
+
+
 export default function HomeScreen() {
-//   const navigate = useNavigation();
-  const [tesk, setTask] = useState({
+  const navigate = useNavigation();
+
+const [tesk, setTask] = useState({
     type: "",
     subject: "",
     description:"",
+    id: uuidv4(),
+    date: "",
+
  
   })
+  
+  useEffect(() => {
+    
+  }, []);
+  
+  const [selectedDate, setSelectedDate] = useState("");
 
+ 
+    
 
   const salveTesk = async () => {
     if (!tesk.type) {
@@ -22,12 +40,31 @@ export default function HomeScreen() {
     }
     if (!tesk.subject) {
       Alert.alert("selecione uma materia")
+    if(!tesk.id){
+      Alert.alert("fail")
+    }
+    if (!selectedDate) {
+      Alert.alert("Selecione uma data");
+      return;
+    }
   }
     let tasks = await storageService.getItem("tasks")
-    console.log(tasks)
+    
     if (!tasks || !tasks.length || tasks.length < 0 ) {
         tasks = []
-    }
+    
+        let tesks = await storageService.getItem("tasks");
+
+        if (tesks && tesks.length > 0) {
+          tesks.forEach((task) => {
+            const teskId = task.id;
+            console.log("ID da tarefa:", teskId);
+           
+          });
+        } else {
+          console.log("Nenhuma tarefa encontrada");
+        }
+          }
 
     const newtasks = [
         ...tasks, tesk
@@ -35,14 +72,14 @@ export default function HomeScreen() {
     storageService.setItem("tasks",newtasks)
    Alert.alert("Tarefa salva")
    console.log("foi registrado")
+   navigate.navigate("Inicio")
   }
 
 
   return (
     <View style={styles.continer}>
        <View style={styles.list}>
-      <Agenda
-      />
+      
       <Select 
             label={"Atividade"}  
             options={[
@@ -102,7 +139,11 @@ export default function HomeScreen() {
               {
                   id: 7,
                   value: "Química"
-              }
+              },
+              {
+                id: 8,
+                value: "artes"
+             }
               
 
             ]}
@@ -115,17 +156,18 @@ export default function HomeScreen() {
             />
             </View>
 
-            <TextInput placeholder="Descrição..." multiline selectionColor={"gray"} style={styles.input} onChangeText={(text) => {
+            <TextInput placeholder="Descrição..." multiline selectionColor={"gray"}  style={styles.input} onChangeText={(text) => {
               setTask({
                   ...tesk, description: text
               })
             }}/>
-
-            
+           <Calender onDateChange={(onDateChange) => {
+              setTask({
+                  ...tesk, date: onDateChange
+              })}} />
             <MyButton style={styles.buttom}
               onPress={
-
-                salveTesk
+                salveTesk  
               }
               color={"#CBC3E3"}
               label={"Registrar"}
@@ -136,23 +178,20 @@ export default function HomeScreen() {
               marginLeft={"15%"}
               borderRadius={10}
               padding={10}
-            /> 
-       
-         
-    </View>
-   
+            />     
+   </View>
   );
 
 }
 const styles = StyleSheet.create({
     input: {
       textAlign: "left",
-      
-      width: "100%",
-      height: "50%",
+      fontSize:15,
+      width: "85%",
+      height: "30%",
       marginTop: 0,
       marginBottom: 40,
-      
+      marginLeft:25,
       borderRadius: 10,
       paddingLeft:5,
       backgroundColor:"white",
@@ -174,8 +213,4 @@ const styles = StyleSheet.create({
 
 
     },
-  
-   
-      
-    
   });
